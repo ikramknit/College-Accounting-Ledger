@@ -1,0 +1,62 @@
+
+<div class="space-y-6">
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <h1 class="text-4xl font-bold text-slate-800">Day Book</h1>
+    <div class="flex items-center space-x-2">
+      <label for="day-book-date" class="text-sm font-medium text-slate-700">Select Date:</label>
+      <input type="date" id="day-book-date" [value]="selectedDate()" (change)="onDateChange($event)" class="bg-white border border-slate-300 rounded-md shadow-sm px-3 py-2 text-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+    <div class="bg-green-50 p-4 rounded-lg">
+      <p class="text-sm font-medium text-green-700">Total Income</p>
+      <p class="text-2xl font-bold text-green-800">{{ dailyIncome() | currency:'USD' }}</p>
+    </div>
+    <div class="bg-red-50 p-4 rounded-lg">
+      <p class="text-sm font-medium text-red-700">Total Expenditure</p>
+      <p class="text-2xl font-bold text-red-800">{{ dailyExpenditure() | currency:'USD' }}</p>
+    </div>
+    <div class="bg-blue-50 p-4 rounded-lg">
+      <p class="text-sm font-medium text-blue-700">Day's Closing Balance</p>
+      <p class="text-2xl font-bold" [class.text-blue-800]="closingBalance() >= 0" [class.text-red-800]="closingBalance() < 0">
+        {{ closingBalance() | currency:'USD' }}
+      </p>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-md overflow-hidden">
+    <table class="w-full text-sm text-left text-slate-500">
+      <thead class="text-xs text-slate-700 uppercase bg-slate-50">
+        <tr>
+          <th scope="col" class="px-6 py-3">Description</th>
+          <th scope="col" class="px-6 py-3">Category</th>
+          <th scope="col" class="px-6 py-3">Type</th>
+          <th scope="col" class="px-6 py-3 text-right">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (transaction of dailyTransactions(); track transaction.id) {
+          <tr class="bg-white border-b hover:bg-slate-50">
+            <td class="px-6 py-4 font-medium text-slate-900">{{ transaction.description }}</td>
+            <td class="px-6 py-4 capitalize">{{ transaction.category }}</td>
+            <td class="px-6 py-4">
+              @if (transaction.type === 'income') {
+                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Income</span>
+              } @else {
+                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">Expenditure</span>
+              }
+            </td>
+            <td class="px-6 py-4 text-right font-mono" [class.text-green-600]="transaction.type === 'income'" [class.text-red-600]="transaction.type === 'expenditure'">
+              {{ transaction.amount | currency:'USD' }}
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="4" class="text-center py-8 text-slate-500">No transactions for the selected date.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

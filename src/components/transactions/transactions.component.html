@@ -1,0 +1,82 @@
+
+<div class="space-y-6">
+  <div class="flex justify-between items-center">
+    <h1 class="text-4xl font-bold text-slate-800">General Ledger</h1>
+    <button (click)="toggleAddForm()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition duration-200 flex items-center space-x-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>
+      <span>{{ showAddForm() ? 'Cancel' : 'New Transaction' }}</span>
+    </button>
+  </div>
+
+  @if (showAddForm()) {
+    <div class="bg-white p-6 rounded-xl shadow-md">
+      <h2 class="text-2xl font-semibold text-slate-700 mb-4">Add New Transaction</h2>
+      <form (ngSubmit)="onSubmit()" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="lg:col-span-2">
+          <label for="desc" class="block text-sm font-medium text-slate-700">Description</label>
+          <input type="text" id="desc" [(ngModel)]="newTransaction().description" name="description" required class="mt-1 block w-full input">
+        </div>
+        <div>
+          <label for="amount" class="block text-sm font-medium text-slate-700">Amount</label>
+          <input type="number" id="amount" [(ngModel)]="newTransaction().amount" name="amount" required class="mt-1 block w-full input">
+        </div>
+        <div>
+          <label for="date" class="block text-sm font-medium text-slate-700">Date</label>
+          <input type="date" id="date" [(ngModel)]="newTransaction().date" name="date" required class="mt-1 block w-full input">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700">Type</label>
+          <select [(ngModel)]="newTransaction().type" name="type" class="mt-1 block w-full input">
+            <option value="income">Income</option>
+            <option value="expenditure">Expenditure</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700">Category</label>
+          <select [(ngModel)]="newTransaction().category" name="category" class="mt-1 block w-full input">
+            <option value="fees">Fees</option>
+            <option value="salary">Salary</option>
+            <option value="utilities">Utilities</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="lg:col-span-4 text-right">
+          <button type="submit" class="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition duration-200">Save Transaction</button>
+        </div>
+      </form>
+    </div>
+  }
+
+  <div class="bg-white rounded-xl shadow-md overflow-hidden">
+    <table class="w-full text-sm text-left text-slate-500">
+      <thead class="text-xs text-slate-700 uppercase bg-slate-50">
+        <tr>
+          <th scope="col" class="px-6 py-3">Date</th>
+          <th scope="col" class="px-6 py-3">Description</th>
+          <th scope="col" class="px-6 py-3">Category</th>
+          <th scope="col" class="px-6 py-3 text-right">Income</th>
+          <th scope="col" class="px-6 py-3 text-right">Expenditure</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (transaction of transactions(); track transaction.id) {
+          <tr class="bg-white border-b hover:bg-slate-50">
+            <td class="px-6 py-4">{{ transaction.date | date:'mediumDate' }}</td>
+            <td class="px-6 py-4 font-medium text-slate-900">{{ transaction.description }}</td>
+            <td class="px-6 py-4 capitalize">{{ transaction.category }}</td>
+            <td class="px-6 py-4 text-right font-mono text-green-600">
+              @if (transaction.type === 'income') { {{ transaction.amount | currency:'USD' }} }
+            </td>
+            <td class="px-6 py-4 text-right font-mono text-red-600">
+              @if (transaction.type === 'expenditure') { {{ transaction.amount | currency:'USD' }} }
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="5" class="text-center py-8 text-slate-500">No transactions recorded.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

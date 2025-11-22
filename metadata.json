@@ -1,0 +1,5 @@
+{
+  "name": "College Accounting Ledger",
+  "description": "An accounting application for colleges to manage income, expenditure, student fees, and view daily transaction logs in a day book format.",
+  "requestFramePermissions": []
+}
