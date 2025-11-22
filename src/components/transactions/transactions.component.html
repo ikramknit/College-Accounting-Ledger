@@ -1,4 +1,3 @@
-
 <div class="space-y-6">
   <div class="flex justify-between items-center">
     <h1 class="text-4xl font-bold text-slate-800">General Ledger</h1>
@@ -11,29 +10,35 @@
   @if (showAddForm()) {
     <div class="bg-white p-6 rounded-xl shadow-md">
       <h2 class="text-2xl font-semibold text-slate-700 mb-4">Add New Transaction</h2>
-      <form (ngSubmit)="onSubmit()" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <form [formGroup]="transactionForm" (ngSubmit)="onSubmit()" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div class="lg:col-span-2">
           <label for="desc" class="block text-sm font-medium text-slate-700">Description</label>
-          <input type="text" id="desc" [(ngModel)]="newTransaction().description" name="description" required class="mt-1 block w-full input">
+          <input type="text" id="desc" formControlName="description" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+           @if (transactionForm.controls.description.touched && transactionForm.controls.description.errors?.['required']) {
+            <p class="mt-1 text-xs text-red-500">Description is required.</p>
+          }
         </div>
         <div>
           <label for="amount" class="block text-sm font-medium text-slate-700">Amount</label>
-          <input type="number" id="amount" [(ngModel)]="newTransaction().amount" name="amount" required class="mt-1 block w-full input">
+          <input type="number" id="amount" formControlName="amount" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+          @if (transactionForm.controls.amount.touched && transactionForm.controls.amount.errors?.['min']) {
+            <p class="mt-1 text-xs text-red-500">Amount must be positive.</p>
+          }
         </div>
         <div>
           <label for="date" class="block text-sm font-medium text-slate-700">Date</label>
-          <input type="date" id="date" [(ngModel)]="newTransaction().date" name="date" required class="mt-1 block w-full input">
+          <input type="date" id="date" formControlName="date" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
         </div>
         <div>
           <label class="block text-sm font-medium text-slate-700">Type</label>
-          <select [(ngModel)]="newTransaction().type" name="type" class="mt-1 block w-full input">
+          <select formControlName="type" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
             <option value="income">Income</option>
             <option value="expenditure">Expenditure</option>
           </select>
         </div>
         <div>
           <label class="block text-sm font-medium text-slate-700">Category</label>
-          <select [(ngModel)]="newTransaction().category" name="category" class="mt-1 block w-full input">
+          <select formControlName="category" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
             <option value="fees">Fees</option>
             <option value="salary">Salary</option>
             <option value="utilities">Utilities</option>
@@ -41,7 +46,7 @@
           </select>
         </div>
         <div class="lg:col-span-4 text-right">
-          <button type="submit" class="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition duration-200">Save Transaction</button>
+          <button type="submit" [disabled]="transactionForm.invalid" class="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition duration-200 disabled:bg-indigo-400 disabled:cursor-not-allowed">Save Transaction</button>
         </div>
       </form>
     </div>
