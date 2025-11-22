@@ -12,7 +12,6 @@ import { Student } from '../../models';
 })
 export class StudentsComponent {
   dataService = inject(DataService);
-  // FIX: Explicitly type `fb` as `FormBuilder` to fix type inference issue.
   fb: FormBuilder = inject(FormBuilder);
   students = this.dataService.students;
 

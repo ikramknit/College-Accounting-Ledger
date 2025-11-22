@@ -12,7 +12,6 @@ import { Transaction } from '../../models';
 })
 export class TransactionsComponent {
   dataService = inject(DataService);
-  // FIX: Explicitly type `fb` as `FormBuilder` to fix type inference issue.
   fb: FormBuilder = inject(FormBuilder);
   transactions = this.dataService.transactions;
   showAddForm = signal(false);
